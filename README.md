@@ -11,20 +11,23 @@ import (
 
 var (
 	log  = zapsetup.RootLogger()
-    log2 = log.Sugar()
+	log2 = log.Sugar()
 )
 
 func main() {
-    log.Info("hello zaplog")
-    log2.Infof("hello %s", "小明")
+	log.Info("hello zaplog")
+	log2.Infof("hello %s", "小明")
 
-    // change log level on the fly
-    log.SetLevel(zap.DebugLevel)
-    log.Debug("hello zaplog")
-    log2.Infof("hello %s", "小明")
+	// change log level on the fly
+	log.SetLevel(zap.DebugLevel)
+	log.Debug("hello zaplog")
+	log2.Infof("hello %s", "小明")
 }
 ```
 
 # TODO 
 - [ ] aliyun-sls-sink
 - [ ] aws-watchlog-sink
+
+# LICENCE
+MIT License
