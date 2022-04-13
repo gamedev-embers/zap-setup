@@ -10,11 +10,11 @@ var (
 	defaultLog = NewLogger()
 )
 
-func RootLogger() *LoggerWrapper {
+func RootLogger() *LoggerX {
 	return defaultLog
 }
 
-func NewLogger(opts ...Option) *LoggerWrapper {
+func NewLogger(opts ...Option) *LoggerX {
 	newCfg := newConfigDefault()
 	for _, opt := range opts {
 		opt(newCfg)

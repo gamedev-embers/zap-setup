@@ -5,23 +5,23 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type LoggerWrapper struct {
+type LoggerX struct {
 	*zap.Logger
 	level zap.AtomicLevel
 }
 
-func newLoggerWrapper(cfg *zap.Config) *LoggerWrapper {
+func newLoggerWrapper(cfg *zap.Config) *LoggerX {
 	log, err := cfg.Build()
 	if err != nil {
 		panic(err)
 	}
-	return &LoggerWrapper{
+	return &LoggerX{
 		Logger: log,
 		level:  cfg.Level,
 	}
 }
 
 // SetLevel atomically
-func (l *LoggerWrapper) SetLevel(level zapcore.Level) {
+func (l *LoggerX) SetLevel(level zapcore.Level) {
 	l.level.SetLevel(level)
 }
