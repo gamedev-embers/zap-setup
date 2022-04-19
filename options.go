@@ -1,8 +1,6 @@
 package zapsetup
 
 import (
-	"fmt"
-
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -18,19 +16,5 @@ func WithSampling(c *zap.SamplingConfig) Option {
 func WithLogLevel(level zapcore.Level) Option {
 	return func(cfg *zap.Config) {
 		cfg.Level.SetLevel(level)
-	}
-}
-
-func WithAliyunSLS() Option {
-	panic(fmt.Errorf("not implemented yet"))
-	return func(cfg *zap.Config) {
-		// TODO: implement aliyun+sls://region-id.xxx.xxx/projectId/logstore?accessId=xx&ccessKey=yy
-	}
-}
-
-func WithAWSWatchLog() Option {
-	panic(fmt.Errorf("not implemented yet"))
-	return func(cfg *zap.Config) {
-		// TODO: implement aws+watchlog://region-id.xxx.xxx/projectId/logstore?accessId=xx&ccessKey=yy
 	}
 }

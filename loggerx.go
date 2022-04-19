@@ -10,7 +10,7 @@ type LoggerX struct {
 	level zap.AtomicLevel
 }
 
-func newLoggerWrapper(cfg *zap.Config) *LoggerX {
+func newLoggerX(cfg *zap.Config) *LoggerX {
 	log, err := cfg.Build()
 	if err != nil {
 		panic(err)
@@ -22,6 +22,13 @@ func newLoggerWrapper(cfg *zap.Config) *LoggerX {
 }
 
 // SetLevel atomically
-func (l *LoggerX) SetLevel(level zapcore.Level) {
+func (l *LoggerX) SetLevel(level zapcore.Level) *LoggerX {
 	l.level.SetLevel(level)
+	return l
+}
+
+func (l *LoggerX) WithSink(s Sink) *LoggerX {
+	core := NewCoreX(l.Logger, s)
+	l.Logger = zap.New(core, zap.AddCaller())
+	return l
 }

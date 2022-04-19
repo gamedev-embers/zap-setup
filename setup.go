@@ -6,23 +6,22 @@ import (
 )
 
 var (
-	// defaultCfg = newConfigDefault()
-	defaultLog = NewLogger()
+	rootLogger = NewLogger()
 )
 
 func RootLogger() *LoggerX {
-	return defaultLog
+	return rootLogger
 }
 
 func NewLogger(opts ...Option) *LoggerX {
-	newCfg := newConfigDefault()
+	newCfg := defaultConfig()
 	for _, opt := range opts {
 		opt(newCfg)
 	}
-	return newLoggerWrapper(newCfg)
+	return newLoggerX(newCfg)
 }
 
-func newConfigDefault() *zap.Config {
+func defaultConfig() *zap.Config {
 	return &zap.Config{
 		Level:            zap.NewAtomicLevelAt(zapcore.InfoLevel),
 		Development:      false,
