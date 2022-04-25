@@ -1,6 +1,8 @@
 package aliyunsls
 
 import (
+	"fmt"
+	"runtime"
 	"testing"
 	"time"
 
@@ -68,4 +70,50 @@ func TestUtils_fields2logs(t *testing.T) {
 		assert.Equal(uint32(enc.Time.Unix()), *l.Time)
 	})
 
+}
+
+func BenchmarkUtils_fields2logs(b *testing.B) {
+	enc := zapcore.Entry{
+		Time:    time.Date(2022, 04, 01, 0, 0, 0, 0, time.Local),
+		Message: "hello",
+		Caller: zapcore.EntryCaller{
+			Defined: true,
+			File:    "/path/to/the/file",
+			Line:    9527,
+		},
+	}
+	buildFields := func(size int, typeName string) []zap.Field {
+		rs := make([]zap.Field, size)
+		for i := 0; i < size; i++ {
+			key := fmt.Sprintf("key%d", i)
+			switch typeName {
+			case "int":
+				rs[i] = zap.Int(key, i)
+			case "str":
+				rs[i] = zap.String(key, fmt.Sprintf("value-%d", i))
+			default:
+				panic(fmt.Errorf("invalid type %s", typeName))
+			}
+		}
+		return rs
+	}
+
+	for _, size := range []int{1, 3, 5, 10, 30} {
+		for _, typeName := range []string{"int", "str"} {
+			name := fmt.Sprintf("%s/fields=%d", typeName, size)
+			fields := buildFields(size, typeName)
+			runtime.GC()
+			b.Run(name, func(b *testing.B) {
+				for i := 0; i <= b.N; i++ {
+					l := fields2logs(enc, fields)
+					if l == nil {
+						b.Fatalf("nil result")
+					}
+					if len(l.Contents)-4 != size {
+						b.Fatalf("invalid size")
+					}
+				}
+			})
+		}
+	}
 }
