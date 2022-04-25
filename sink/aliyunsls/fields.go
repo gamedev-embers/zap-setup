@@ -12,9 +12,13 @@ import (
 )
 
 func fields2logs(ent zapcore.Entry, fields []zapcore.Field) *sls.Log {
-	headerSize := 4
-	totalSize := headerSize + len(fields)
-	contents := make([]*sls.LogContent, totalSize)
+	var headerSize int
+	if ent.Stack == "" {
+		headerSize = 4
+	} else {
+		headerSize = 5
+	}
+	contents := make([]*sls.LogContent, headerSize+len(fields))
 
 	y, m, d := ent.Time.Date()
 	contents[0] = &sls.LogContent{
@@ -33,8 +37,14 @@ func fields2logs(ent zapcore.Entry, fields []zapcore.Field) *sls.Log {
 		Key:   proto.String("caller"),
 		Value: proto.String(ent.Caller.TrimmedPath()),
 	}
+	if ent.Stack != "" {
+		contents[4] = &sls.LogContent{
+			Key:   proto.String("stacktrace"),
+			Value: proto.String(ent.Stack),
+		}
+	}
 
-	for i, length := headerSize, totalSize; i < length; i++ {
+	for i := 0; i < len(fields); i++ {
 		var f = &fields[i]
 		var key = f.Key
 		var val string
@@ -65,17 +75,10 @@ func fields2logs(ent zapcore.Entry, fields []zapcore.Field) *sls.Log {
 		default:
 			val = fmt.Sprintf("%v", f.Interface)
 		}
-		contents[i] = &sls.LogContent{
+		contents[i+headerSize] = &sls.LogContent{
 			Key:   proto.String(key),
 			Value: proto.String(val),
 		}
-	}
-
-	if ent.Stack != "" {
-		contents = append(contents, &sls.LogContent{
-			Key:   proto.String("stacktrace"),
-			Value: proto.String(ent.Stack),
-		})
 	}
 
 	row := &sls.Log{
