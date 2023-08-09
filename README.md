@@ -10,6 +10,7 @@ zaplog 有着强大又灵活的配置项,但多数场合并不需要太多功能
 # Usage
 ```go
 import (
+	"go.uber.org/zap"
 	zapsetup "github.com/gamedev-embers/zap-setup"
 )
 
@@ -19,18 +20,18 @@ var (
 )
 
 func main() {
-	log.Info("hello zaplog")
+	log.Info("hello zaplog", zap.String("name", "小明"))
 	log2.Infof("hello %s", "小明")
 
 	// change log level on the fly
 	log.SetLevel(zap.DebugLevel)
-	log.Debug("hello zaplog")
+	log.Debug("hello zaplog", zap.String("name", "小明"))
 	log2.Infof("hello %s", "小明")
 }
 ```
 
 # TODO 
-- [ ] aliyun-sls-sink
+- [x] aliyun-sls-sink
 - [ ] aws-watchlog-sink
 
 # LICENCE
