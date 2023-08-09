@@ -10,7 +10,7 @@ zaplog 有着强大又灵活的配置项,但多数场合并不需要太多功能
 # Usage
 ```go
 import (
-	zapsetup "github.com/upgrade-or-die/zap-setup"
+	zapsetup "github.com/gamedev-embers/zap-setup"
 )
 
 var (

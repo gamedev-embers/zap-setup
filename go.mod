@@ -1,4 +1,4 @@
-module github.com/upgrade-or-die/zap-setup
+module github.com/gamedev-embers/zap-setup
 
 go 1.17
 
