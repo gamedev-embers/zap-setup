@@ -27,8 +27,11 @@ func (l *LoggerX) SetLevel(level zapcore.Level) *LoggerX {
 	return l
 }
 
-func (l *LoggerX) WithSink(s Sink) *LoggerX {
+func (l *LoggerX) WithSink(s Sink, logLevel ...zapcore.Level) *LoggerX {
 	core := NewCoreX(l.Logger, s)
-	l.Logger = zap.New(core, zap.AddCaller())
+	if len(logLevel) > 0 {
+		core.SetLogLevelForSink(logLevel[0])
+	}
+	l.Logger = zap.New(core, zap.WithCaller(true))
 	return l
 }

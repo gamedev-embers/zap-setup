@@ -9,12 +9,15 @@ import (
 type CoreX struct {
 	core zapcore.Core
 	sink Sink
+
+	logLevelForSink zapcore.Level
 }
 
 func NewCoreX(l *zap.Logger, sink Sink) *CoreX {
 	return &CoreX{
-		core: l.Core(),
-		sink: sink,
+		core:            l.Core(),
+		sink:            sink,
+		logLevelForSink: zapcore.DebugLevel,
 	}
 }
 
@@ -34,10 +37,20 @@ func (c *CoreX) With(fields []zapcore.Field) zapcore.Core {
 }
 
 func (c *CoreX) Write(ent zapcore.Entry, fields []zapcore.Field) error {
-	c.sink.Write(ent, fields)
+	if c.logLevelForSink <= ent.Level {
+		c.sink.Write(ent, fields)
+		return nil
+	}
 	return c.core.Write(ent, fields)
 }
 
 func (c *CoreX) Sync() error {
 	return c.core.Sync()
+}
+
+// SetLogLevelForSink doesn't change the log level of the core,
+// but it changes the log level of the sink
+// Note: it's not goroutine safe
+func (c *CoreX) SetLogLevelForSink(level zapcore.Level) {
+	c.logLevelForSink = level
 }

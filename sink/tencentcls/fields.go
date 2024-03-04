@@ -1,44 +1,44 @@
-package aliyunsls
+package tencentcls
 
 import (
 	"fmt"
 	"strconv"
 	"time"
 
-	sls "github.com/aliyun/aliyun-log-go-sdk"
+	cls "github.com/tencentcloud/tencentcloud-cls-sdk-go"
 
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/protobuf/proto"
 )
 
-func fields2logs(ent zapcore.Entry, fields []zapcore.Field) *sls.Log {
+func fields2logs(ent zapcore.Entry, fields []zapcore.Field) *cls.Log {
 	var headerSize int
 	if ent.Stack == "" {
 		headerSize = 4
 	} else {
 		headerSize = 5
 	}
-	contents := make([]*sls.LogContent, headerSize+len(fields))
-
 	y, m, d := ent.Time.Date()
-	contents[0] = &sls.LogContent{
+
+	contents := make([]*cls.Log_Content, headerSize+len(fields))
+	contents[0] = &cls.Log_Content{
 		Key:   proto.String("date"),
 		Value: proto.String(fmt.Sprintf("%04d-%02d-%02d", y, int(m), d)),
 	}
-	contents[1] = &sls.LogContent{
+	contents[1] = &cls.Log_Content{
 		Key:   proto.String("msg"),
 		Value: proto.String(ent.Message),
 	}
-	contents[2] = &sls.LogContent{
+	contents[2] = &cls.Log_Content{
 		Key:   proto.String("level"),
 		Value: proto.String(ent.Level.String()),
 	}
-	contents[3] = &sls.LogContent{
+	contents[3] = &cls.Log_Content{
 		Key:   proto.String("caller"),
 		Value: proto.String(ent.Caller.TrimmedPath()),
 	}
 	if ent.Stack != "" {
-		contents[4] = &sls.LogContent{
+		contents[4] = &cls.Log_Content{
 			Key:   proto.String("stacktrace"),
 			Value: proto.String(ent.Stack),
 		}
@@ -75,15 +75,13 @@ func fields2logs(ent zapcore.Entry, fields []zapcore.Field) *sls.Log {
 		default:
 			val = fmt.Sprintf("%v", f.Interface)
 		}
-		contents[i+headerSize] = &sls.LogContent{
+		contents[i+headerSize] = &cls.Log_Content{
 			Key:   proto.String(key),
 			Value: proto.String(val),
 		}
 	}
-
-	row := &sls.Log{
-		Time:     proto.Uint32(uint32(ent.Time.Unix())),
+	return &cls.Log{
+		Time:     proto.Int64(ent.Time.Unix()),
 		Contents: contents,
 	}
-	return row
 }
