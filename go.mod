@@ -1,9 +1,9 @@
 module github.com/gamedev-embers/zap-setup
 
-go 1.17
+go 1.18
 
 require (
-	github.com/aliyun/aliyun-log-go-sdk v0.1.29
+	github.com/aliyun/aliyun-log-go-sdk v0.1.75
 	github.com/stretchr/testify v1.8.1
 	github.com/tencentcloud/tencentcloud-cls-sdk-go v1.0.8
 	go.uber.org/zap v1.27.0
@@ -15,9 +15,9 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-kit/kit v0.10.0 // indirect
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
-	github.com/gogo/protobuf v1.3.1 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.0 // indirect
-	github.com/klauspost/compress v1.15.1 // indirect
+	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

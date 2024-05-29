@@ -8,6 +8,7 @@ import (
 type LoggerX struct {
 	*zap.Logger
 	level zap.AtomicLevel
+	logf  *zap.SugaredLogger
 }
 
 func newLoggerX(cfg *zap.Config) *LoggerX {
@@ -18,6 +19,7 @@ func newLoggerX(cfg *zap.Config) *LoggerX {
 	return &LoggerX{
 		Logger: log,
 		level:  cfg.Level,
+		logf:   log.Sugar(),
 	}
 }
 
@@ -34,4 +36,20 @@ func (l *LoggerX) WithSink(s Sink, logLevel ...zapcore.Level) *LoggerX {
 	}
 	l.Logger = zap.New(core, zap.WithCaller(true))
 	return l
+}
+
+func (l *LoggerX) Debugf(format string, args ...interface{}) {
+	l.logf.Debugf(format, args...)
+}
+
+func (l *LoggerX) Infof(format string, args ...interface{}) {
+	l.logf.Infof(format, args...)
+}
+
+func (l *LoggerX) Warnf(format string, args ...interface{}) {
+	l.logf.Warnf(format, args...)
+}
+
+func (l *LoggerX) Errorf(format string, args ...interface{}) {
+	l.logf.Errorf(format, args...)
 }

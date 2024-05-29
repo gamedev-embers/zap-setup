@@ -95,6 +95,7 @@ func TestLoggerX_WithSink_DisableInfoLevel(t *testing.T) {
 		log.Info(msg+" info", fields...)
 		log.Warn(msg+" warn", fields...)
 		log.Error(msg+" error", fields...)
+		log.Infof(msg + " info2")
 		select {
 		case row := <-sink.queue:
 			assert.Equal(msg+" warn", row.ent.Message)
